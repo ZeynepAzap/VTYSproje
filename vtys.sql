@@ -38,7 +38,7 @@ CREATE TABLE Kitap_Kategorileri (
     ad VARCHAR(255) NOT NULL
 );
 
--- Kitaplar Tablosu
+-- Şubeler Tablosu
 CREATE TABLE Subeler (
     SubeID SERIAL PRIMARY KEY,
     ad  VARCHAR(255) NOT NULL,
@@ -46,7 +46,7 @@ CREATE TABLE Subeler (
     telefon VARCHAR(11)
    
 );
-
+-- Lokasyonlar Tablosu
 CREATE TABLE Lokasyonlar (
     lokasyonID INT PRIMARY KEY, -- Otomatik artan ID
     SubeID INT REFERENCES Subeler(SubeID),
@@ -111,15 +111,15 @@ CREATE TABLE Kitap_Alim (
     kitapID INT REFERENCES Kitaplar(KitapID),
     subeKodu INT NOT NULL
 );
-
+-- Maliyet Tablosu
 CREATE TABLE Maliyet (
     maliyetID SERIAL PRIMARY KEY,
-    alimID INT REFERENCES Kitap_Alim(alimID),  -- Kitap Alım tablosuyla ilişki
-    toplamMaliyet NUMERIC(10, 2),               -- Hesaplanan toplam maliyet
-    hesaplanmaTarihi DATE DEFAULT CURRENT_DATE  -- Maliyet hesaplama tarihi
+    alimID INT REFERENCES Kitap_Alim(alimID),  
+    toplamMaliyet NUMERIC(10, 2),               
+    hesaplanmaTarihi DATE DEFAULT CURRENT_DATE 
 );
 
--- Trigger fonksiyonu
+-- Kitap Lokasyon Trigger Fonksiyonu
 CREATE OR REPLACE FUNCTION kitap_lokasyon_random()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -139,13 +139,60 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Kitap lokasyon trigger
+-- Kitap Lokasyon Trigger
 CREATE TRIGGER kitap_lokasyon_random_trigger
 AFTER INSERT ON Kitaplar
 FOR EACH ROW EXECUTE FUNCTION kitap_lokasyon_random();
 
+-- Kitap alma Trigger Fonksiyonu
+CREATE OR REPLACE FUNCTION kitap_alim_ekle()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Kitap alım tarihini otomatik olarak bugünün tarihi olarak atar
+    NEW.tarih := CURRENT_DATE;
 
---kitap ödünç fonksiyonu
+    -- Kitap alımını Kitap_Alim tablosuna ekler
+    INSERT INTO Kitap_Alim (tedarikciID, tarih, miktar, fiyat, kitapID, subeKodu)
+    VALUES (NEW.tedarikciID, NEW.tarih, NEW.miktar, NEW.fiyat, NEW.kitapID, NEW.subeKodu);
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Bağış Açıklama Trigger Fonksiyonu
+CREATE OR REPLACE FUNCTION bagis_aciklama_teşekkürler()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Bağış yapılırken, aciklama sütununa 'Teşekkürler' yazılır
+    NEW.aciklama := 'Teşekkürler';
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Bağış Açıklama Trigger
+CREATE TRIGGER bagis_aciklama_teşekkürler_trigger
+BEFORE INSERT ON Bagis
+FOR EACH ROW
+EXECUTE FUNCTION bagis_aciklama_teşekkürler();
+
+-- Etkinlik Açıklama Tigger Fonksiyonu
+CREATE OR REPLACE FUNCTION ekle_ve_eklenti_aciklama()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Açıklamaya otomatik ekleme işlemi
+    NEW.aciklama := NEW.aciklama || ' || katılımlarınızı bekliyoruz... ';
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Etkinlik Açıklama 
+CREATE TRIGGER trigger_aciklama_ekle
+BEFORE INSERT ON Etkinlikler
+FOR EACH ROW
+EXECUTE FUNCTION ekle_ve_eklenti_aciklama();
+
+
+--Kitap Ödünç Fonksiyonu
 CREATE OR REPLACE FUNCTION kitap_odunc_verme(
     p_kitapID INT,
     p_uyeID INT
@@ -165,9 +212,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
-
-
+-- Kitap İade Fonksiyonu
 CREATE OR REPLACE FUNCTION kitap_iade_verme(
     p_kitapID INT,
     p_uyeID INT
@@ -189,7 +234,7 @@ END;
 $$ LANGUAGE plpgsql;
  
 
-
+-- Çalışan Ekleme Fonksiyonu
 CREATE OR REPLACE FUNCTION calisan_ekle(
     p_ad VARCHAR(255),
     p_soyad VARCHAR(255),
@@ -215,6 +260,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+
+-- Çalışan Silme Fonksiyonu
 CREATE OR REPLACE PROCEDURE calisan_sil(p_kisi_id INT)
 LANGUAGE plpgsql
 AS $$
@@ -227,7 +274,7 @@ BEGIN
 END;
 $$;
 
-
+-- Üye Ekleme Fonksiyonu
 CREATE OR REPLACE FUNCTION uye_ekle(
     p_ad VARCHAR(255),
     p_soyad VARCHAR(255),
@@ -253,7 +300,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
+-- Üye Silme Fonksiyonu
 CREATE OR REPLACE PROCEDURE uye_sil(p_kisi_id INT)
 LANGUAGE plpgsql
 AS $$
@@ -266,22 +313,7 @@ BEGIN
 END;
 $$;
 
-
--- Kitap alma fonksiyonu
-CREATE OR REPLACE FUNCTION kitap_alim_ekle()
-RETURNS TRIGGER AS $$
-BEGIN
-    -- Kitap alım tarihini otomatik olarak bugünün tarihi olarak atar
-    NEW.tarih := CURRENT_DATE;
-
-    -- Kitap alımını Kitap_Alim tablosuna ekler
-    INSERT INTO Kitap_Alim (tedarikciID, tarih, miktar, fiyat, kitapID, subeKodu)
-    VALUES (NEW.tedarikciID, NEW.tarih, NEW.miktar, NEW.fiyat, NEW.kitapID, NEW.subeKodu);
-
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
+-- Bağış Ekleme Fonksiyonu
 CREATE OR REPLACE FUNCTION bagis_ekle(
     p_uyeID INT,
     p_kitapAdeti INT,
@@ -295,23 +327,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
-CREATE OR REPLACE FUNCTION bagis_aciklama_teşekkürler()
-RETURNS TRIGGER AS $$
-BEGIN
-    -- Bağış yapılırken, aciklama sütununa 'Teşekkürler' yazılır
-    NEW.aciklama := 'Teşekkürler';
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER bagis_aciklama_teşekkürler_trigger
-BEFORE INSERT ON Bagis
-FOR EACH ROW
-EXECUTE FUNCTION bagis_aciklama_teşekkürler();
-
-
--- etkinlik ekleme fonksiyonu 
+-- Etkinlik Ekleme Fonksiyonu 
 CREATE OR REPLACE FUNCTION etkinlik_ekle(
     p_calisanID INT,
     p_ad VARCHAR(255),
@@ -326,7 +342,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
---etkinlik listeleme fonksiyonu
+--Etkinlik Listeleme Fonksiyonu
 CREATE OR REPLACE FUNCTION etkinlik_listele()
 RETURNS TABLE (
     etkinlikID INT,
@@ -341,24 +357,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
---açıklama triggerı
-CREATE OR REPLACE FUNCTION ekle_ve_eklenti_aciklama()
-RETURNS TRIGGER AS $$
-BEGIN
-    -- Açıklamaya otomatik ekleme işlemi
-    NEW.aciklama := NEW.aciklama || ' || katılımlarınızı bekliyoruz... ';
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER trigger_aciklama_ekle
-BEFORE INSERT ON Etkinlikler
-FOR EACH ROW
-EXECUTE FUNCTION ekle_ve_eklenti_aciklama();
-
-
-
-
+-- Maliyet Hesaplama Fonksiyonu
 CREATE OR REPLACE FUNCTION maliyet_hesapla(p_alimID INT)
 RETURNS VOID AS $$
 DECLARE
@@ -380,8 +379,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-SELECT * FROM kitaplar;
-
+-- VERİLER 
 
 INSERT INTO Kisiler (ad, soyad, telefonNo, mail, adres) VALUES
 ('Orhan', 'Pamuk', '5311234567', 'orhan.pamuk@example.com', 'İstanbul, Türkiye'),
@@ -454,7 +452,7 @@ INSERT INTO Yayinevi (ad, iletisimBilgisi) VALUES
 ('Timaş Yayınları', 'Tel: 0212 674 90 90, Email: timas@timas.com.tr');
 
 
--- Kitap Kategorileri Tablosu
+
 INSERT INTO Kitap_Kategorileri (ad) VALUES
 ('Roman'),
 ('Klasikler'),
@@ -543,4 +541,4 @@ INSERT INTO Tedarikci (ad, iletisim) VALUES
 ('Elite Matbaa', 'Telefon: 0212 444 3322, E-posta: elite.matbaa@gmail.com, Adres: İstanbul, Şişli, Nişantaşı Mahallesi No: 10'),
 ('Matbaa Dünyası', 'Telefon: 0216 678 9012, E-posta: info@matbaadunyasi.com, Adres: İstanbul, Kadıköy, Fikirtepe Mahallesi No: 5');
 
-SELECT * FROM uyeler;
+SELECT * FROM kisiler;
