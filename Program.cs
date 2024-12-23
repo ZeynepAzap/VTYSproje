@@ -1,16 +1,16 @@
-﻿using System;
+using System;
 using System.Data;
 using Npgsql;
 
 class KutuphaneYonetim
 {
-    private const string ConnectionString = "Host=localhost;Port=5432;Username=postgres;Password=azp123;Database=vyts1";
+    private const string ConnectionString = "Host=localhost;Port=5432;Username=postgres;Password= (şifre) ;Database= (veritabanı adı)";
 
     public static void Main(string[] args)
     {
         while (true)
         {
-            Console.WriteLine("Kütüphane Yönetim Sistemi");
+            Console.WriteLine("\nKütüphane Yönetim Sistemi");
             Console.WriteLine("1. Çalışan İşlem Menüsü");
             Console.WriteLine("2. Üye İşlem Menüsü"); // Yeni seçenek eklendi
             Console.WriteLine("3. Kitap İşlem Menüsü");
@@ -49,7 +49,7 @@ class KutuphaneYonetim
     }
     private static void CalisanIslemMenusu()
     {
-        Console.WriteLine("Çalışan İşlem Menüsü");
+        Console.WriteLine(" \nÇalışan İşlem Menüsü");
         Console.WriteLine("1. Çalışan Ekle");
         Console.WriteLine("2. Çalışan Sil");
         Console.WriteLine("3. Çalışan Güncelle"); // Yeni seçenek eklendi
@@ -76,7 +76,7 @@ class KutuphaneYonetim
     private static void CalisanEkle()
     {
         Console.Clear();
-        Console.WriteLine("* Çalışan Ekle *");
+        Console.WriteLine(" \n* Çalışan Ekle *");
         // Kullanıcıdan bilgiler alınır
         Console.Write("Ad: ");
         string ad = Console.ReadLine();
@@ -112,7 +112,7 @@ class KutuphaneYonetim
 
                     // Fonksiyonu çalıştır
                     cmd.ExecuteNonQuery();
-                    Console.WriteLine("Çalışan başarıyla eklendi.");
+                    Console.WriteLine("\nÇalışan başarıyla eklendi.");
                 }
             }
         }
@@ -123,7 +123,7 @@ class KutuphaneYonetim
     }
     public static void CalisanSil()
     {
-        Console.Write("Silmek istediğiniz çalışanın kişi ID'sini girin: ");
+        Console.Write("\nSilmek istediğiniz çalışanın kişi ID'sini girin: ");
         if (int.TryParse(Console.ReadLine(), out int kisiId))
         {
             using (NpgsqlConnection baglanti = new NpgsqlConnection(ConnectionString))
@@ -150,7 +150,7 @@ class KutuphaneYonetim
                         komut.Parameters.AddWithValue("p_kisi_id", kisiId);
                         komut.ExecuteNonQuery();
 
-                        Console.WriteLine($"Kişi ID {kisiId} ile ilişkilendirilen çalışan başarıyla silindi.");
+                        Console.WriteLine($"\nKişi ID {kisiId} ile ilişkilendirilen çalışan başarıyla silindi.");
                     }
                 }
                 catch (Exception ex)
@@ -183,7 +183,7 @@ class KutuphaneYonetim
                 }
             }
 
-            Console.Write("Güncellemek istediğiniz çalışanın ID'sini girin: ");
+            Console.Write("\nGüncellemek istediğiniz çalışanın ID'sini girin: ");
             int kisiID = int.Parse(Console.ReadLine());
 
             Console.Write("Yeni Ad: ");
@@ -218,18 +218,18 @@ class KutuphaneYonetim
                 int affectedRows = updateCmd.ExecuteNonQuery();
                 if (affectedRows > 0)
                 {
-                    Console.WriteLine("Çalışan bilgileri başarıyla güncellendi.");
+                    Console.WriteLine("\nÇalışan bilgileri başarıyla güncellendi.");
                 }
                 else
                 {
-                    Console.WriteLine("Çalışan bilgileri güncellenemedi.");
+                    Console.WriteLine("\nÇalışan bilgileri güncellenemedi.");
                 }
             }
         }
     }
     private static void UyeIslemMenusu()
     {
-        Console.WriteLine("Üye İşlem Menüsü");
+        Console.WriteLine("\nÜye İşlem Menüsü");
         Console.WriteLine("1. Üye Ekle");
         Console.WriteLine("2. Üye Sil");
         Console.WriteLine("3. Üye Güncelle"); // Yeni seçenek eklendi
@@ -255,7 +255,7 @@ class KutuphaneYonetim
     }
     private static void UyeEkle()
     {
-        Console.WriteLine("Yeni Üye Ekle");
+        Console.WriteLine("\nYeni Üye Ekle");
         Console.Write("Ad: ");
         string ad = Console.ReadLine();
 
@@ -287,7 +287,7 @@ class KutuphaneYonetim
 
                     komut.ExecuteNonQuery();
 
-                    Console.WriteLine("Üye başarıyla eklendi.");
+                    Console.WriteLine("\nÜye başarıyla eklendi.");
                 }
             }
             catch (Npgsql.PostgresException ex)
@@ -303,8 +303,8 @@ class KutuphaneYonetim
     }
     public static void UyeSil()
     {
-        Console.WriteLine("Üye Sil");
-        Console.Write("Silmek istediğiniz üyenin ID'sini girin: ");
+        Console.WriteLine("\nÜye Sil");
+        Console.Write("\nSilmek istediğiniz üyenin ID'sini girin: ");
 
         if (!int.TryParse(Console.ReadLine(), out int kisiID))
         {
@@ -337,7 +337,7 @@ class KutuphaneYonetim
 
                     komut.ExecuteNonQuery();
 
-                    Console.WriteLine("Üye başarıyla silindi.");
+                    Console.WriteLine("\nÜye başarıyla silindi.");
                 }
             }
             catch (Npgsql.PostgresException ex)
@@ -362,7 +362,7 @@ class KutuphaneYonetim
             {
                 using (var reader = cmd.ExecuteReader())
                 {
-                    Console.WriteLine("Üyeler:");
+                    Console.WriteLine("\nÜyeler:");
                     while (reader.Read())
                     {
                         Console.WriteLine($"ID: {reader["kisiID"]}, Ad: {reader["ad"]}, Soyad: {reader["soyad"]}");
@@ -370,7 +370,7 @@ class KutuphaneYonetim
                 }
             }
 
-            Console.Write("Güncellemek istediğiniz üyenin ID'sini girin: ");
+            Console.Write("\nGüncellemek istediğiniz üyenin ID'sini girin: ");
             int kisiID = int.Parse(Console.ReadLine());
 
             Console.Write("Yeni Ad: ");
@@ -405,18 +405,18 @@ class KutuphaneYonetim
                 int affectedRows = updateCmd.ExecuteNonQuery();
                 if (affectedRows > 0)
                 {
-                    Console.WriteLine("Üye bilgileri başarıyla güncellendi.");
+                    Console.WriteLine("\nÜye bilgileri başarıyla güncellendi.");
                 }
                 else
                 {
-                    Console.WriteLine("Üye bilgileri güncellenemedi.");
+                    Console.WriteLine("\nÜye bilgileri güncellenemedi.");
                 }
             }
         }
     }
     private static void KitapIslemMenusu()
     {
-        Console.WriteLine("Kitap İşlem Menüsü");
+        Console.WriteLine("\nKitap İşlem Menüsü");
         Console.WriteLine("1. Ödünç Verme");
         Console.WriteLine("2. İade Alma");
         Console.WriteLine("3. Kitapları Listele");
@@ -463,7 +463,7 @@ class KutuphaneYonetim
             {
                 using (var reader = kategoriCmd.ExecuteReader())
                 {
-                    Console.WriteLine("Kategoriler:");
+                    Console.WriteLine("\nKategoriler:");
                     while (reader.Read())
                     {
                         Console.WriteLine($"Kategori Kodu: {reader["kategoriKodu"]}, Adı: {reader["ad"]}");
@@ -471,7 +471,7 @@ class KutuphaneYonetim
                 }
             }
 
-            Console.Write("Listelenmesini istediğiniz kategorinin kodunu girin: ");
+            Console.Write("\nListelenmesini istediğiniz kategorinin kodunu girin: ");
             int kategoriKodu = int.Parse(Console.ReadLine());
 
             string kitapQuery = @"
@@ -544,7 +544,7 @@ class KutuphaneYonetim
             {
                 using (var reader = cmd.ExecuteReader())
                 {
-                    Console.WriteLine("Kitaplar:");
+                    Console.WriteLine("\nKitaplar:");
                     while (reader.Read())
                     {
                         Console.WriteLine($"Kitap ID: {reader["KitapID"]}, Adı: {reader["KitapAdi"]}, Yazar: {reader["YazarAdi"]}, Yayinevi: {reader["YayineviAdi"]}, Kategori: {reader["KategoriAdi"]}, Yayın Yılı: {reader["yayinYili"]}, Durum: {reader["Durum"]}");
@@ -555,7 +555,7 @@ class KutuphaneYonetim
     }
     private static void KitapAra()
     {
-        Console.WriteLine("Kitap Arama Menüsü");
+        Console.WriteLine("\nKitap Arama Menüsü");
         Console.WriteLine("1. Kitap ID'ye Göre Ara");
         Console.WriteLine("2. Kitap Adına Göre Ara");
         Console.Write("Seçiminizi yapın: ");
@@ -577,7 +577,7 @@ class KutuphaneYonetim
 
     private static void KitapIDyeGoreAra()
     {
-        Console.Write("Kitap ID: ");
+        Console.Write("\nKitap ID: ");
         int kitapID = int.Parse(Console.ReadLine());
 
         using (var conn = new NpgsqlConnection(ConnectionString))
@@ -617,50 +617,10 @@ class KutuphaneYonetim
         }
     }
 
-    //private static void KitapAdinaGoreAra()
-    //{
-    //    Console.Write("Kitap Adı: ");
-    //    string kitapAdi = Console.ReadLine();
-
-    //    using (var conn = new NpgsqlConnection(ConnectionString))
-    //    {
-    //        conn.Open();
-    //        string query = @"
-    //            SELECT 
-    //                k.KitapID, 
-    //                k.ad AS KitapAdi, 
-    //                COALESCE(l.lokasyonID, k.lokasyonID) AS lokasyonID, 
-    //                COALESCE(s.ad, 'Bilinmiyor') AS SubeAdi, 
-    //                COALESCE(s.adres, 'Bilinmiyor') AS SubeAdresi
-    //            FROM 
-    //                Kitaplar k
-    //            LEFT JOIN 
-    //                Lokasyonlar l ON k.KitapID = l.kitapID
-    //            LEFT JOIN 
-    //                Subeler s ON l.SubeID = s.SubeID
-    //            WHERE 
-    //                k.ad ILIKE @kitapAdi";
-
-    //        using (var cmd = new NpgsqlCommand(query, conn))
-    //        {
-    //            cmd.Parameters.AddWithValue("@kitapAdi", "%" + kitapAdi + "%");
-    //            using (var reader = cmd.ExecuteReader())
-    //            {
-    //                if (reader.Read())
-    //                {
-    //                    Console.WriteLine($"Kitap ID: {reader["KitapID"]}, Adı: {reader["KitapAdi"]}, Lokasyon ID: {reader["lokasyonID"]}, Şube: {reader["SubeAdi"]}, Adres: {reader["SubeAdresi"]}");
-    //                }
-    //                else
-    //                {
-    //                    Console.WriteLine("Kitap bulunamadı.");
-    //                }
-    //            }
-    //        }
-    //    }
-    //}
+   
     private static void KitapAdinaGoreAra()
     {
-        Console.Write("Kitap Adı: ");
+        Console.Write("\nKitap Adı: ");
         string kitapAdi = Console.ReadLine();
 
         using (var conn = new NpgsqlConnection(ConnectionString))
@@ -703,7 +663,7 @@ class KutuphaneYonetim
     }
     private static void OduncVer()
     {
-        Console.Write("Kitap ID: ");
+        Console.Write("\nKitap ID: ");
         int kitapID = int.Parse(Console.ReadLine());
         Console.Write("Üye ID: ");
         int uyeID = int.Parse(Console.ReadLine());
@@ -720,7 +680,7 @@ class KutuphaneYonetim
                 int kitapCount = (int)(long)kitapKontrolCmd.ExecuteScalar();
                 if (kitapCount == 0)
                 {
-                    Console.WriteLine("Kitap bulunamadı. Lütfen geçerli bir kitap ID girin.");
+                    Console.WriteLine("\nKitap bulunamadı. Lütfen geçerli bir kitap ID girin.");
                     return;
                 }
             }
@@ -733,7 +693,7 @@ class KutuphaneYonetim
                 int uyeCount = (int)(long)uyeKontrolCmd.ExecuteScalar();
                 if (uyeCount == 0)
                 {
-                    Console.WriteLine("Üye bulunamadı. Lütfen geçerli bir üye ID girin.");
+                    Console.WriteLine("\nÜye bulunamadı. Lütfen geçerli bir üye ID girin.");
                     return;
                 }
             }
@@ -746,7 +706,7 @@ class KutuphaneYonetim
                 bool oduncteMi = (bool)oduncteMiCmd.ExecuteScalar();
                 if (!oduncteMi)
                 {
-                    Console.WriteLine("Kitap zaten ödünçte. Lütfen geçerli bir kitap ID girin.");
+                    Console.WriteLine("\nKitap zaten ödünçte. Lütfen geçerli bir kitap ID girin.");
                     return;
                 }
             }
@@ -756,13 +716,13 @@ class KutuphaneYonetim
                 cmd.Parameters.AddWithValue("@kitapID", kitapID);
                 cmd.Parameters.AddWithValue("@uyeID", uyeID);
                 cmd.ExecuteNonQuery();
-                Console.WriteLine("Kitap ödünç verildi.");
+                Console.WriteLine("\nKitap ödünç verildi.");
             }
         }
     }
     private static void IadeAl()
     {
-        Console.Write("Kitap ID: ");
+        Console.Write("\nKitap ID: ");
         int kitapID = int.Parse(Console.ReadLine());
         Console.Write("Üye ID: ");
         int uyeID = int.Parse(Console.ReadLine());
@@ -779,7 +739,7 @@ class KutuphaneYonetim
                 int kitapCount = (int)(long)kitapKontrolCmd.ExecuteScalar();
                 if (kitapCount == 0)
                 {
-                    Console.WriteLine("Kitap bulunamadı. Lütfen geçerli bir kitap ID girin.");
+                    Console.WriteLine("\nKitap bulunamadı. Lütfen geçerli bir kitap ID girin.");
                     return;
                 }
             }
@@ -796,7 +756,7 @@ class KutuphaneYonetim
                 int oduncCount = (int)(long)oduncKontrolCmd.ExecuteScalar();
                 if (oduncCount == 0)
                 {
-                    Console.WriteLine("Bu kitap bu üye tarafından ödünç alınmamış.");
+                    Console.WriteLine("\nBu kitap bu üye tarafından ödünç alınmamış.");
                     return;
                 }
             }
@@ -824,7 +784,7 @@ class KutuphaneYonetim
     }
     public static void KitapAlimEkle()
     {
-        Console.WriteLine("Kitap Alım Ekle");
+        Console.WriteLine("\nKitap Alım Ekle");
 
         Console.Write("Tedarikçi ID: ");
         int tedarikciID = int.Parse(Console.ReadLine());
@@ -864,7 +824,7 @@ class KutuphaneYonetim
 
                     komut.ExecuteNonQuery();
 
-                    Console.WriteLine("Kitap alımı başarıyla eklendi.");
+                    Console.WriteLine("\nKitap alımı başarıyla eklendi.");
                 }
 
                 // Kitapları ekle
@@ -915,7 +875,7 @@ class KutuphaneYonetim
     }
     private static void BagisIslemMenusu()
     {
-        Console.WriteLine("Bağış İşlem Menüsü");
+        Console.WriteLine("\nBağış İşlem Menüsü");
         Console.WriteLine("1. Bağış Ekle");
         Console.WriteLine("2. Bağışları Listele");
         Console.Write("Seçiminizi yapın: ");
@@ -937,7 +897,7 @@ class KutuphaneYonetim
     }
     private static void BagisEkle()
     {
-        Console.Write("Üye ID: ");
+        Console.Write("\nÜye ID: ");
         int uyeID = int.Parse(Console.ReadLine());
         Console.Write("Kitap Adeti: ");
         int kitapAdeti = int.Parse(Console.ReadLine());
@@ -953,7 +913,7 @@ class KutuphaneYonetim
                 cmd.Parameters.AddWithValue("@kitapAdeti", kitapAdeti);
                 cmd.Parameters.AddWithValue("@aciklama", aciklama);
                 cmd.ExecuteNonQuery();
-                Console.WriteLine("Bağış başarıyla eklendi.");
+                Console.WriteLine("\nBağış başarıyla eklendi.");
             }
 
             // Kitapları ekle
@@ -1002,7 +962,7 @@ class KutuphaneYonetim
             {
                 using (var reader = cmd.ExecuteReader())
                 {
-                    Console.WriteLine("Bağışlar:");
+                    Console.WriteLine("\nBağışlar:");
                     while (reader.Read())
                     {
                         Console.WriteLine($"Bağış ID: {reader["bagisID"]}, Üye ID: {reader["uyeID"]}, Kitap Adeti: {reader["kitapAdeti"]}, Tarih: {reader["tarih"]}, Açıklama: {reader["aciklama"]}");
@@ -1047,7 +1007,7 @@ class KutuphaneYonetim
                         insertCmd.Parameters.AddWithValue("alimID", 1);  // Burada ilgili alimID'yi kullanabilirsiniz.
 
                         insertCmd.ExecuteNonQuery();
-                        Console.WriteLine($"Toplam gider: {toplamMaliyet} TL.");
+                        Console.WriteLine($"\nToplam gider: {toplamMaliyet} TL.");
                     }
                 }
             }
@@ -1059,7 +1019,7 @@ class KutuphaneYonetim
     }
     private static void EtkinlikIslemMenusu()
     {
-        Console.WriteLine("Etkinlik İşlem Menüsü");
+        Console.WriteLine("\nEtkinlik İşlem Menüsü");
         Console.WriteLine("1. Etkinlik Ekle");
         Console.WriteLine("2. Etkinlik Listele");
         Console.Write("Seçiminizi yapın: ");
@@ -1082,7 +1042,7 @@ class KutuphaneYonetim
     private static void EtkinlikEkle()
     {
         // Kullanıcıdan etkinlik bilgilerini al
-        Console.Write("Çalışan ID: ");
+        Console.Write("\nÇalışan ID: ");
         int calisanID = int.Parse(Console.ReadLine());
 
         Console.Write("Etkinlik Adı: ");
@@ -1109,7 +1069,7 @@ class KutuphaneYonetim
                     cmd.Parameters.AddWithValue("@tarih", tarih);
                     cmd.Parameters.AddWithValue("@aciklama", aciklama);
                     cmd.ExecuteNonQuery();
-                    Console.WriteLine("Etkinlik başarıyla eklendi.");
+                    Console.WriteLine("\nEtkinlik başarıyla eklendi.");
                 }
             }
         }
@@ -1134,7 +1094,7 @@ class KutuphaneYonetim
                     // Etkinlikleri yazdır
                     while (reader.Read())
                     {
-                        Console.WriteLine($"Etkinlik ID: {reader["etkinlikID"]}");
+                        Console.WriteLine($"\nEtkinlik ID: {reader["etkinlikID"]}");
                         Console.WriteLine($"Çalışan ID: {reader["calisanID"]}");
                         Console.WriteLine($"Ad: {reader["ad"]}");
                         Console.WriteLine($"Tarih: {reader["tarih"]}");
